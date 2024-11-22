@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.biblioteca.biblioteca.application.Mappers;
 import com.biblioteca.biblioteca.domain.dto.EmprestimoDTO;
 import com.biblioteca.biblioteca.domain.entity.Emprestimo;
+import com.biblioteca.biblioteca.domain.repository.IEmprestimoRepository;
+import com.biblioteca.biblioteca.domain.repository.IReservaRepository;
 import com.biblioteca.biblioteca.domain.service.IEmprestimoService;
 import com.biblioteca.biblioteca.shared.CustomException;
 
@@ -26,6 +29,15 @@ import jakarta.validation.Valid;
 public class EmprestimoController {
     @Autowired
     private IEmprestimoService emprestimoService;
+
+    @Autowired
+    private IEmprestimoRepository emprestimoRepository; // Repositório de empréstimos
+
+    @Autowired
+    private IReservaRepository reservaRepository; // Repositório de reservas
+
+    @Autowired
+    private Mappers emprestimoMapper;
 
     // Sera o metodo post
     @PostMapping
@@ -46,12 +58,12 @@ public class EmprestimoController {
     @PutMapping("/{id}/renovacao")
     public ResponseEntity<EmprestimoDTO> renovarEmprestimo(@PathVariable Long id) {
         Emprestimo emprestimo = emprestimoRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Empréstimo não encontrado"));
+                .orElseThrow(() -> new CustomException("Empréstimo não encontrado", null));
 
         // Verifica se o livro está reservado por outro usuário
         boolean reservado = reservaRepository.existsByLivro_IdAndAtivoTrue(emprestimo.getLivro().getId());
         if (reservado) {
-            throw new CustomException("O livro está reservado por outro usuário e não pode ser renovado.");
+            throw new CustomException("O livro está reservado por outro usuário e não pode ser renovado.", null);
         }
 
         emprestimo.setDataDevolucaoPrevista(emprestimo.getDataDevolucaoPrevista().plusDays(14));

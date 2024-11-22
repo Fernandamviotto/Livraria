@@ -39,7 +39,7 @@ public class UsuarioService implements IUsuarioService {
         Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
 
         if (usuarioExistente.isEmpty()) {
-            throw new CustomException("Usuário não encontrado com o ID: " + id);
+            throw new CustomException("Usuário não encontrado com o ID: " + id, null);
         }
 
         // Atualiza os dados do usuário existente com as informações do DTO
@@ -59,7 +59,7 @@ public class UsuarioService implements IUsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
 
         if (usuario.isEmpty()) {
-            throw new CustomException("Usuário não encontrado com o ID: " + id);
+            throw new CustomException("Usuário não encontrado com o ID: " + id, null);
         }
 
         usuarioRepository.deleteById(id);
@@ -81,7 +81,7 @@ public class UsuarioService implements IUsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
 
         if (usuario.isEmpty()) {
-            throw new CustomException("Usuário não encontrado com o ID: " + id);
+            throw new CustomException("Usuário não encontrado com o ID: " + id, null);
         }
 
         // Retorna o DTO mapeado a partir da entidade encontrada
@@ -94,7 +94,7 @@ public class UsuarioService implements IUsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 
         if (usuario.isEmpty()) {
-            throw new CustomException("Usuário não encontrado com o email: " + email);
+            throw new CustomException("Usuário não encontrado com o email: " + email, null);
         }
 
         // Retorna o DTO mapeado a partir da entidade encontrada
