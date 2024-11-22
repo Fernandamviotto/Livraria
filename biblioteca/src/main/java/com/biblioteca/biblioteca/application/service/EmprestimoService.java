@@ -34,23 +34,23 @@ public class EmprestimoService implements IEmprestimoService {
     @Override
     public EmprestimoDTO cadastrarEmprestimo(EmprestimoDTO emprestimoDTO) {
         Usuario usuario = usuarioRepository.findById(emprestimoDTO.getUsuarioDTO().getId())
-                .orElseThrow(() -> new CustomException("Usuário não encontrado"));
+                .orElseThrow(() -> new CustomException("Usuário não encontrado", null));
 
         Livro livro = livroRepository.findById(emprestimoDTO.getLivroDTO().getId())
-                .orElseThrow(() -> new CustomException("Livro não encontrado"));
+                .orElseThrow(() -> new CustomException("Livro não encontrado", null));
 
         // Verificar se o usuário já atingiu o limite de empréstimos
         long emprestimosAtivos = emprestimoRepository.countByUsuario_IdAndStatus(usuario.getId(),
                 StatusEmprestimo.ATIVO);
         if (emprestimosAtivos >= 5) {
-            throw new CustomException("Usuário atingiu o limite de 5 livros simultaneamente.");
+            throw new CustomException("Usuário atingiu o limite de 5 livros simultaneamente.", null);
         }
 
         // Verificar se o livro está disponível
         boolean livroDisponivel = !emprestimoRepository.existsByLivro_IdAndStatus(livro.getId(),
                 StatusEmprestimo.ATIVO);
         if (!livroDisponivel) {
-            throw new CustomException("Livro não está disponível para empréstimo.");
+            throw new CustomException("Livro não está disponível para empréstimo.", null);
         }
 
         // Criar novo empréstimo
@@ -69,7 +69,7 @@ public class EmprestimoService implements IEmprestimoService {
     @Override
     public EmprestimoDTO registrarDevolucao(Long id, EmprestimoDTO devolucaoDTO) {
         Emprestimo emprestimo = emprestimoRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Empréstimo não encontrado"));
+                .orElseThrow(() -> new CustomException("Empréstimo não encontrado", null));
 
         LocalDate dataDevolucao = devolucaoDTO.getDataDevolucaoRealizada();
         if (dataDevolucao.isAfter(emprestimo.getDataDevolucaoPrevista())) {
