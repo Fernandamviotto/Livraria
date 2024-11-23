@@ -36,7 +36,7 @@ public class LivroService implements ILivroService {
         Optional<Livro> livroExistent = livroRepository.findById(id);
 
         if (livroExistent.isEmpty()) {
-            throw new CustomException("Livro não encontrado com o ID: " + id, null);
+            throw new CustomException("Livro não encontrado com o ID: " + id);
         }
 
         Livro livro = livroExistent.get();
@@ -56,7 +56,7 @@ public class LivroService implements ILivroService {
         Optional<Livro> livro = livroRepository.findById(id);
 
         if (livro.isEmpty()) {
-            throw new CustomException("Livro não encontrado com o ID: " + id, null);
+            throw new CustomException("Livro não encontrado com o ID: " + id);
         }
 
         livroRepository.deleteById(id);
@@ -86,7 +86,7 @@ public class LivroService implements ILivroService {
         Optional<Livro> livro = livroRepository.findById(id);
 
         if (livro.isEmpty()) {
-            throw new CustomException("Livro não encontrado com o ID: " + id, null);
+            throw new CustomException("Livro não encontrado com o ID: " + id);
         }
 
         return livroMapper.livrtoDto(livro.get());
@@ -98,7 +98,7 @@ public class LivroService implements ILivroService {
         LivroDTO livroDTO = buscarPorId(id);
 
         if (!livroDTO.isDisponibilidade()) {
-            throw new CustomException("O livro não está disponível para empréstimo.", null);
+            throw new CustomException("O livro não está disponível para empréstimo.");
         }
     }
 }

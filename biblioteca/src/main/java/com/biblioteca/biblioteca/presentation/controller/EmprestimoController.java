@@ -1,7 +1,5 @@
 package com.biblioteca.biblioteca.presentation.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,12 +56,12 @@ public class EmprestimoController {
     @PutMapping("/{id}/renovacao")
     public ResponseEntity<EmprestimoDTO> renovarEmprestimo(@PathVariable Long id) {
         Emprestimo emprestimo = emprestimoRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Empréstimo não encontrado", null));
+                .orElseThrow(() -> new CustomException("Empréstimo não encontrado"));
 
         // Verifica se o livro está reservado por outro usuário
         boolean reservado = reservaRepository.existsByLivro_IdAndAtivoTrue(emprestimo.getLivro().getId());
         if (reservado) {
-            throw new CustomException("O livro está reservado por outro usuário e não pode ser renovado.", null);
+            throw new CustomException("O livro está reservado por outro usuário e não pode ser renovado.");
         }
 
         emprestimo.setDataDevolucaoPrevista(emprestimo.getDataDevolucaoPrevista().plusDays(14));
@@ -72,13 +70,27 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimoMapper.EmprestimotoDto(emprestimo));
     }
 
-    @GetMapping("/historico/usuario/{id}")
-    public ResponseEntity<List<EmprestimoDTO>> consultarHistoricoPorUsuario(@PathVariable Long UsuarioDTO) {
-        return ResponseEntity.ok(emprestimoService.consultarHistoricoPorUsuario(UsuarioDTO));
+    @GetMapping("/{id}")
+    public ResponseEntity<EmprestimoDTO> consultarHistoricoPorUsuario(@PathVariable Long id) {
+        try {
+            EmprestimoDTO emprestimo = (EmprestimoDTO) emprestimoService.consultarHistoricoPorUsuario(id);
+            return ResponseEntity.ok(emprestimo);
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
-    @GetMapping("/historico/livro/{id}")
-    public ResponseEntity<List<EmprestimoDTO>> consultarHistoricoPorLivro(@PathVariable Long LivroDTO) {
-        return ResponseEntity.ok(emprestimoService.consultarHistoricoPorLivro(LivroDTO));
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<EmprestimoDTO> consultarHistoricoPorLivro(@PathVariable Long idUsuario) {
+        try {
+            EmprestimoDTO emprestimo = (EmprestimoDTO) emprestimoService.consultarHistoricoPorLivro(idUsuario);
+            return ResponseEntity.ok(emprestimo);
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }
